@@ -46,10 +46,7 @@ public class List {
     }
     public void print(){
         ListNode curr = head;
-        int counter = 0;
         while(curr != null){
-            System.out.print("["+counter+"] : ");
-            counter++;
             System.out.print(curr.getFile_name()+" ");
             System.out.println(curr.getFrequency());
             curr = curr.getNext();

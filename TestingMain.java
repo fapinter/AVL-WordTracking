@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class TestingMain {
     public static void main(String[] args){
+        //Test for the List implementations
         ArrayList<String> fileNames = new ArrayList<String>();
         fileNames.add("Arquivo1");
         fileNames.add("Arquivo2");

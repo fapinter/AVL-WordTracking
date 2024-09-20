@@ -16,16 +16,8 @@ public class ListNode {
         return file_name;
     }
 
-    public void setFile_name(String file_name) {
-        this.file_name = file_name;
-    }
-
     public int getFrequency() {
         return frequency;
-    }
-
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
     }
 
     public ListNode getNext() {
