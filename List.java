@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class List {
     ListNode head;
 
-    public List(int numNodes, ArrayList<String> fileNames){
+    public List(int numNodes, ArrayList<String> fileNames, String currentFile){
         this.head = null;
         ListNode prev = null;
         for(int i = 0; i < numNodes; i++){
@@ -16,6 +16,7 @@ public class List {
             }
             prev = node;
         }
+        addNodeFrequency(currentFile);
     }
 
     public void addNodeFrequency(String fileName){

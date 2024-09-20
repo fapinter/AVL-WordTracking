@@ -9,19 +9,21 @@ import java.util.ArrayList;
 
 public class TestingMain {
     public static void main(String[] args){
-        //Test for the List implementations
-        ArrayList<String> fileNames = new ArrayList<String>();
-        fileNames.add("Arquivo1");
-        fileNames.add("Arquivo2");
-        fileNames.add("Arquivo3");
-        int numNodes = fileNames.size();
+        String palavra1 = "abacates";
+        String palavra2 = "abacate";
+        String palavra3 = "abacate";
+        String palavra4 = "ABACATE";
 
-        List lista = new List(numNodes, fileNames);
-        System.out.println(lista.length());
-        lista.print();
-        lista.addNodeFrequency("Arquivo1");
-        lista.addNodeFrequency("Arquivo1");
-        lista.addNodeFrequency("Arquivo2");
-        lista.print();
+        //CompareTo function requires a default UPPER or LOWER case comparison
+
+        //How the algorithm works:
+        //First compare the letters
+        //Second: compare the String size
+        //Smaller words with same letters go to the left
+
+        System.out.println("Negativo: palavra 1 vem antes");
+        System.out.println("Positivo: palavra 1 vem depois");
+        System.out.println("0: palavras iguais");
+        System.out.println(palavra1.compareTo(palavra2));
     }
 }
