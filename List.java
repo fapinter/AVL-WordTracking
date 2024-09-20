@@ -17,13 +17,7 @@ public class List {
             prev = node;
         }
     }
-    public boolean vazia(){
-        boolean bool = false;
-        if(this.head == null){
-            bool = true;
-        }
-        return bool;
-    }
+
     public void addNodeFrequency(String fileName){
         boolean inserted = false;
         ListNode curr = head;
@@ -41,5 +35,24 @@ public class List {
             }
         }
     }
-
+    public int length(){
+        ListNode curr = head;
+        int counter = 0;
+        while(curr != null){
+            counter++;
+            curr = curr.getNext();
+        }
+        return counter;
+    }
+    public void print(){
+        ListNode curr = head;
+        int counter = 0;
+        while(curr != null){
+            System.out.print("["+counter+"] : ");
+            counter++;
+            System.out.print(curr.getFile_name()+" ");
+            System.out.println(curr.getFrequency());
+            curr = curr.getNext();
+        }
+    }
 }
