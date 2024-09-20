@@ -34,4 +34,8 @@ public class AVLNode {
     public void increaseFrequency(String fileName){
         frequency_counter.addNodeFrequency(fileName);
     }
+    public void print(){
+        System.out.println("Word: "+getWord());
+        frequency_counter.print();
+    }
 }
