@@ -9,21 +9,18 @@ import java.util.ArrayList;
 
 public class TestingMain {
     public static void main(String[] args){
-        String palavra1 = "abacates";
-        String palavra2 = "abacate";
-        String palavra3 = "abacate";
-        String palavra4 = "ABACATE";
+        String firstWord = "mamona";
+        ArrayList<String> files = new ArrayList<String>();
+        files.add("arquivo1.txt");
+        files.add("arquivo2.txt");
 
-        //CompareTo function requires a default UPPER or LOWER case comparison
+        AVL arvore = new AVL(firstWord, files.size(), files, "arquivo1.txt");
+        arvore.insertElement("mamona",files.size(), files, "arquivo1.txt");
+        arvore.insertElement("mamona",files.size(), files, "arquivo1.txt");
 
-        //How the algorithm works:
-        //First compare the letters
-        //Second: compare the String size
-        //Smaller words with same letters go to the left
+        arvore.removeElement("mamona");
+        arvore.insertElement("mansao",files.size(), files, "arquivo1.txt");
+        arvore.getRoot().print();
 
-        System.out.println("Negativo: palavra 1 vem antes");
-        System.out.println("Positivo: palavra 1 vem depois");
-        System.out.println("0: palavras iguais");
-        System.out.println(palavra1.compareTo(palavra2));
     }
 }
