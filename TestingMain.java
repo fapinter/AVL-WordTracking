@@ -9,19 +9,18 @@ import java.util.ArrayList;
 
 public class TestingMain {
     public static void main(String[] args){
-        //Test for the List implementations
-        ArrayList<String> fileNames = new ArrayList<String>();
-        fileNames.add("Arquivo1");
-        fileNames.add("Arquivo2");
-        fileNames.add("Arquivo3");
-        int numNodes = fileNames.size();
+        String firstWord = "mamona";
+        ArrayList<String> files = new ArrayList<String>();
+        files.add("arquivo1.txt");
+        files.add("arquivo2.txt");
 
-        List lista = new List(numNodes, fileNames);
-        System.out.println(lista.length());
-        lista.print();
-        lista.addNodeFrequency("Arquivo1");
-        lista.addNodeFrequency("Arquivo1");
-        lista.addNodeFrequency("Arquivo2");
-        lista.print();
+        AVL arvore = new AVL(firstWord, files.size(), files, "arquivo1.txt");
+        arvore.insertElement("mamona",files.size(), files, "arquivo1.txt");
+        arvore.insertElement("mamona",files.size(), files, "arquivo1.txt");
+
+        arvore.removeElement("mamona");
+        arvore.insertElement("mansao",files.size(), files, "arquivo1.txt");
+        arvore.getRoot().print();
+
     }
 }
