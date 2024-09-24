@@ -1,41 +1,49 @@
-import java.util.ArrayList;
-
 public class List {
-    ListNode head;
+    private ListNode head;
+    private ListNode tail;
 
-    public List(int numNodes, ArrayList<String> fileNames, String currentFile){
+    public List(){
         this.head = null;
-        ListNode prev = null;
-        for(int i = 0; i < numNodes; i++){
-            ListNode node = new ListNode(fileNames.get(i), null);
-            if(prev != null){
-                prev.setNext(node);
-            }
-            else{
-                this.head = node;
-            }
-            prev = node;
-        }
-        addNodeFrequency(currentFile);
+        this.tail = null;
     }
 
+    //Used to insert a new node into the list
+    //always inserting at the end of the list
+    public void insertNode(String fileName){
+        ListNode newNode = new ListNode(fileName);
+        if(this.tail == null){
+            this.head = newNode;
+        }
+        else{
+            this.tail.setNext(newNode);
+        }
+        this.tail = newNode;
+    }
+    //Searches for the node with the name of the file
+    //if the node is not found, then creates a new node
+    //and inserts in the end of the list
     public void addNodeFrequency(String fileName){
         boolean inserted = false;
         ListNode curr = head;
         while(!inserted){
-            if(curr.getFile_name().equals(fileName)){
+            //Node found
+            if(curr.getFileName().equals(fileName)){
                 curr.increaseFrequency();
                 inserted = true;
             }
+            //Not the current node
             else{
+                //If the curr is the tail
                 if(curr.getNext() == null){
-                    System.out.println("ERRO: file node not found");
+                    insertNode(fileName);
+                    inserted = true;
                 }
                 curr = curr.getNext();
 
             }
         }
     }
+    //Gets the length of the List
     public int length(){
         ListNode curr = head;
         int counter = 0;
@@ -45,12 +53,17 @@ public class List {
         }
         return counter;
     }
+    //Prints all the occurrences of the
+    //word in each file and the total frequency
     public void print(){
         ListNode curr = head;
+        int totalFrequency = 0;
         while(curr != null){
-            System.out.print(curr.getFile_name()+" ");
+            System.out.print("Arquivo "+curr.getFileName()+" : ");
             System.out.println(curr.getFrequency());
+            totalFrequency += curr.getFrequency();
             curr = curr.getNext();
         }
+        System.out.println("Total de ocorrências : "+ totalFrequency);
     }
 }

@@ -1,17 +1,15 @@
-import java.util.ArrayList;
-
 //First Creating the Binary-Tree without the rotations, those will be added further into the project
-
 
 public class AVLNode {
     private String word;
-    private List frequency_counter;
+    private List frequencyCounter;
     private AVLNode left;
     private AVLNode right;
 
-    public AVLNode(String word, int numNodes, ArrayList<String> fileNames, String currentFile){
+    public AVLNode(String word,String currentFile){
         this.word = word;
-        this.frequency_counter = new List(numNodes, fileNames, currentFile);
+        this.frequencyCounter = new List();
+        this.frequencyCounter.insertNode(currentFile);
         this.left = null;
         this.right = null;
     }
@@ -32,10 +30,10 @@ public class AVLNode {
         return this.word;
     }
     public void increaseFrequency(String fileName){
-        frequency_counter.addNodeFrequency(fileName);
+        frequencyCounter.addNodeFrequency(fileName);
     }
     public void print(){
         System.out.println("Word: "+getWord());
-        frequency_counter.print();
+        frequencyCounter.print();
     }
 }

@@ -1,19 +1,18 @@
 public class ListNode {
-    private String file_name;
+    private String fileName;
     private int frequency;
     private ListNode next;
 
-    public ListNode(String file_name, ListNode node){
-        this.file_name = file_name;
-        this.frequency = 0;
+    //Node contains the name of the file where the word is found
+    //and how many times the word was found in that file
+    public ListNode(String fileName){
+        this.fileName = fileName;
+        this.frequency = 1;
         this.next = null;
-        if(node != null){
-            this.next = node;
-        }
     }
 
-    public String getFile_name() {
-        return file_name;
+    public String getFileName() {
+        return fileName;
     }
 
     public int getFrequency() {
