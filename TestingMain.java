@@ -14,12 +14,12 @@ public class TestingMain {
         files.add("arquivo1.txt");
         files.add("arquivo2.txt");
 
-        AVL arvore = new AVL(firstWord, files.size(), files, "arquivo1.txt");
-        arvore.insertElement("mamona",files.size(), files, "arquivo1.txt");
-        arvore.insertElement("mamona",files.size(), files, "arquivo1.txt");
+        AVL arvore = new AVL(firstWord, "arquivo1.txt");
+        arvore.insertElement("mamona", "arquivo1.txt");
+        arvore.insertElement("mamona", "arquivo1.txt");
 
         arvore.removeElement("mamona");
-        arvore.insertElement("mansao",files.size(), files, "arquivo1.txt");
+        arvore.insertElement("mansao", "arquivo1.txt");
         arvore.getRoot().print();
 
     }

@@ -1,20 +1,20 @@
-import java.util.ArrayList;
-//Missing methods: height(AVLNode node)
-
 //AVL concepts not applied yet
-
+//All the methods before line 259 should be redone if optimization is possible
+//Reminder: Do not use recursion methods in search algorithms
+//if needed, create an algorithm that calls a different recursive method instead of
+//applying recursion to its entirety
 public class AVL {
     private AVLNode root;
 
-    public AVL(String word, int numNodes, ArrayList<String> fileNames, String currentFile){
-        this.root = new AVLNode(word, numNodes, fileNames, currentFile);
+    public AVL(String word, String currentFile){
+        this.root = new AVLNode(word, currentFile);
     }
     public AVLNode getRoot(){
         return this.root;
     }
-    public void insertElement(String word,int numNodes, ArrayList<String> fileNames, String currentFile){
+    public void insertElement(String word, String currentFile){
         if(this.root == null){
-            this.root = new AVLNode(word, numNodes, fileNames, currentFile);
+            this.root = new AVLNode(word, currentFile);
             return;
         }
         AVLNode curr = getRoot();
@@ -41,7 +41,7 @@ public class AVL {
                 }
             }
             else{
-                AVLNode newNode = new AVLNode(word, numNodes, fileNames, currentFile);
+                AVLNode newNode = new AVLNode(word, currentFile);
                 //Previous word comes before the new Word
                 if(prev.getWord().compareTo(word) < 0){
                     prev.setRight(newNode);
@@ -244,35 +244,6 @@ public class AVL {
         }
         return lowest;
     }
-
-    public void printPreOrder(AVLNode node){
-        if(node != null){
-            System.out.println(node.getWord());
-            printPreOrder(node.getLeft());
-            printPreOrder(node.getRight());
-        }
-    }
-    public void printInOrder(AVLNode node){
-        if(!rootExists()){
-            return;
-        }
-        if(node != null){
-            printInOrder(node.getLeft());
-            System.out.println(node.getWord());
-            printInOrder(node.getRight());
-        }
-    }
-    public void printPostOrder(AVLNode node){
-        if(!rootExists()){
-            return;
-        }
-        if(node != null){
-            printPostOrder(node.getLeft());
-            printPostOrder(node.getRight());
-            System.out.println(node.getWord());
-        }
-    }
-
     public int height(AVLNode node){
         int hLeft, hRight;
         if(node == null){
@@ -285,11 +256,35 @@ public class AVL {
         }
         return hRight + 1;
     }
-    public boolean rootExists(){
-        boolean bool = true;
-        if(this.root == null){
-            bool = false;
+    //--------------------METHODS WE WILL KEEP----------------------//
+    public void printPreOrder(AVLNode node){
+        if(getRoot() == null){
+            return;
         }
-        return bool;
+        if(node != null){
+            System.out.println(node.getWord());
+            printPreOrder(node.getLeft());
+            printPreOrder(node.getRight());
+        }
+    }
+    public void printInOrder(AVLNode node){
+        if(getRoot() == null){
+            return;
+        }
+        if(node != null){
+            printInOrder(node.getLeft());
+            System.out.println(node.getWord());
+            printInOrder(node.getRight());
+        }
+    }
+    public void printPostOrder(AVLNode node){
+        if(getRoot() == null){
+            return;
+        }
+        if(node != null){
+            printPostOrder(node.getLeft());
+            printPostOrder(node.getRight());
+            System.out.println(node.getWord());
+        }
     }
 }
