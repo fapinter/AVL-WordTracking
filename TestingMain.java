@@ -5,22 +5,26 @@
 //Check with the others if they are using the TestingMain before
 //Deleting its code and doing your own testing
 
-import java.util.ArrayList;
-
 public class TestingMain {
-    public static void main(String[] args){
-        String firstWord = "mamona";
-        ArrayList<String> files = new ArrayList<String>();
-        files.add("arquivo1.txt");
-        files.add("arquivo2.txt");
+    public static void main(String[] args) {
+        String str1 = "banana";
+        String[] chars = {"cabra", "casa", "banana", "mamao"};
+        String[] chars2 = {"cabra", "camelo", "almondega", "vagem"};
+        AVL arvore = new AVL();
+        for (int i = 0; i < chars.length; i++) {
+            String string = chars[i];
+            arvore.insertElement(string, "chars");
+        }
+        for (int i = 0; i < chars2.length; i++) {
+            String string = chars2[i];
+            arvore.insertElement(string, "chars2");
+        }
+        //arvore.removeElement("cabra");
+        arvore.removeElement("casa");
 
-        AVL arvore = new AVL(firstWord, "arquivo1.txt");
-        arvore.insertElement("mamona", "arquivo1.txt");
-        arvore.insertElement("mamona", "arquivo1.txt");
+        arvore.printInOrder(arvore.getRoot());
+        //System.out.println(arvore.getRoot().getWord());
 
-        arvore.removeElement("mamona");
-        arvore.insertElement("mansao", "arquivo1.txt");
-        arvore.getRoot().print();
 
     }
 }

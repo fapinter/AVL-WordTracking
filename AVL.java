@@ -1,248 +1,216 @@
 //AVL concepts not applied yet
-//All the methods before line 259 should be redone if optimization is possible
-//Reminder: Do not use recursion methods in search algorithms
-//if needed, create an algorithm that calls a different recursive method instead of
-//applying recursion to its entirety
 public class AVL {
     private AVLNode root;
 
-    public AVL(String word, String currentFile){
-        this.root = new AVLNode(word, currentFile);
-    }
+    //Constructor instancing the root as null
+    //the first word inserted will be the root
+    public AVL(){this.root = null;}
     public AVLNode getRoot(){
         return this.root;
     }
-    public void insertElement(String word, String currentFile){
-        if(this.root == null){
-            this.root = new AVLNode(word, currentFile);
-            return;
-        }
-        AVLNode curr = getRoot();
-        AVLNode prev = null;
-        boolean inserted = false;
-        while(!inserted){
-            if(curr!= null){
-
-                int res = curr.getWord().compareTo(word);
-                //Current word comes before the new Word
-                if(res < 0){
-                    prev = curr;
-                    curr = curr.getRight();
-                }
-                //They are the same word
-                else if(res == 0){
-                    curr.increaseFrequency(currentFile);
-                    inserted = true;
-                }
-                //Current word comes after the new Word
-                else{
-                    prev = curr;
-                    curr = curr.getLeft();
-                }
-            }
-            else{
-                AVLNode newNode = new AVLNode(word, currentFile);
-                //Previous word comes before the new Word
-                if(prev.getWord().compareTo(word) < 0){
-                    prev.setRight(newNode);
-                    inserted = true;
-                }
-                else{
-                    prev.setRight(newNode);
-                    inserted = true;
-                }
-            }
-        }
+    public void insertElement(String word, String currentFile) {
+        this.root = insertRecursively(this.root, word, currentFile);
     }
-    //PreOrder to the search
+    private AVLNode insertRecursively(AVLNode node, String word, String currentFile) {
+        if (node == null) {
+            return new AVLNode(word, currentFile);
+        }
+        int res = node.getWord().compareTo(word);
+        //+, node.getWord comes after word
+        if (res > 0) {
+            node.setLeft(insertRecursively(node.getLeft(), word, currentFile));
+        }
+        //-, node.getWord comes before word
+        else if (res < 0) {
+            node.setRight(insertRecursively(node.getRight(), word, currentFile));
+        }
+        //node.getWord is the word
+        else {
+            node.increaseFrequency(currentFile);
+        }
+        return node;
+    }
+    //mode parameters sets if the element will be shown
+    //0: just the search
+    //1: search and print of the values
     public AVLNode elementExists(AVLNode node,String word, int mode){
+        AVLNode curr = node;
         boolean found = false;
         AVLNode nodeWord = null;
-        if(node != null){
-            if(word.compareTo(node.getWord()) == 0){
-                if(mode == 1){
-                    node.print();
+        while(!found){
+            if(curr != null){
+                int res = curr.getWord().compareTo(word);
+                if(res == 0){
+                    if(mode == 1){node.print();}
+                    found = true;
+                    nodeWord = curr;
                 }
-                found = true;
-                nodeWord = node;
+                else if(res > 0){curr = curr.getLeft();}
+                else{curr = curr.getRight();}
             }
-            else{
-                elementExists(node.getLeft(), word, mode);
-                elementExists(node.getRight(), word, mode);
-            }
+            //turns found into true just to get out of the loop
+            else{found = true;}
         }
         return nodeWord;
     }
 
-    public AVLNode findFather(AVLNode father, AVLNode son){
+    public AVLNode findFather(AVLNode son){
+        AVLNode father = getRoot();
         AVLNode returnFather = null;
-        if(father != null){
-            if(father.getLeft() == son || father.getRight() == son){
-                returnFather = father;
+        boolean found = false;
+        //Both father and son are the root
+        if(father == son){return returnFather;}
+        while(!found){
+            if(father != null){
+                if(father.getLeft() == son || father.getRight() == son){
+                    returnFather = father;
+                    found = true;
+                }
+                else if(father.getWord().compareTo(son.getWord()) > 0){
+                    father = father.getLeft();
+                }
+                else{father = father.getRight();}
             }
-            else{
-                findFather(father.getLeft(), son);
-                findFather(father.getRight(), son);
-            }
+            //turns found into true just to get out of the loop
+            else{found = true;}
         }
         return returnFather;
     }
-    //Not finished and this will take a long time to figure out
     public void removeElement(String word){
-        //Implement after the search method
+        //May return a node or null
         AVLNode node = elementExists(getRoot(), word, 0);
-        AVLNode father = null;
-
-        //isRoot is used to verify if the node we are removing is the root,
-        //this verification is needed because otherwise the findFather method
-        //will result in an Exception
-        boolean isRoot = true;
-
+        AVLNode lowestNode;
+        AVLNode highestNode;
+        AVLNode extremesFather;
+        //Node found
         if(node != null){
-            if(node != this.root){
-                isRoot = false;
-                father = findFather(getRoot(), node);
-            }
-            //Case 1: node has no descendants
-            if(node.getLeft() == null && node.getRight() == null){
-                if(isRoot){
-                    this.root = null;
-                }
-                else{
-                    if(father.getLeft() == node){
-                        father.setLeft(null);
+            //Case 0.0: Node == root
+            if(node == this.root){
+                //No sons
+                if(node.getLeft() == null && node.getRight() == null){
+                    this.root = null;}
+                //Left son
+                else if(node.getLeft() != null && node.getRight() == null){
+                    highestNode = HighestElement(node.getLeft());
+                    extremesFather = findFather(highestNode);
+                    if (extremesFather != this.root) {
+                        extremesFather.setRight(null);
+                        if (highestNode.getLeft() != null) {
+                            extremesFather.setRight(highestNode.getLeft());
+                        }
+                        highestNode.setLeft(this.root.getLeft());
                     }
-                    else{
-                        father.setRight(null);
-                    }
-                }
-            }
-            //Case 2: node has only the left descendant
-            //Solution: Get the highestElement from the Left subTree
-            else if(node.getLeft() != null && node.getRight() == null){
-
-                String highest = HighestElement(node.getLeft());
-                AVLNode HighestNode = elementExists(node.getLeft(), highest, 0);
-                AVLNode HighestNodeFather = findFather(father, HighestNode);
-
-                if(HighestNode.getLeft() != null){
-                    HighestNodeFather.setRight(HighestNode.getLeft());
-                }
-                if(node.getRight() != HighestNode){
-                    HighestNode.setLeft(node.getLeft());
-                }
-                if(isRoot){
                     this.root.setLeft(null);
-                    this.root = HighestNode;
+                    this.root = highestNode;
                 }
-                else{
-                    if(father.getLeft() == node){
-                        father.setLeft(HighestNode);
+                //Right son
+                else if(node.getLeft() == null && node.getRight() != null){
+                    lowestNode = LowestElement(node.getRight());
+                    extremesFather = findFather(lowestNode);
+                    if (extremesFather != this.root) {
+                        extremesFather.setLeft(null);
+                        if (lowestNode.getRight() != null) {
+                            extremesFather.setLeft(lowestNode.getRight());
+                        }
+                        lowestNode.setRight(this.root.getRight());
                     }
-                    else{
-                        father.setRight(HighestNode);
-                    }
-                }
-            }
-            //Case 3: node has only the right descendant
-            //Solution: Get the LowestElement from the Right subTree
-            else if(node.getLeft() == null && node.getRight() != null){
-                String lowest = LowestElement(node.getRight());
-                AVLNode LowestNode = elementExists(node.getRight(), lowest, 0);
-
-                //Maintenance on the LowestNode's father if necessary
-                AVLNode LowestNodeFather = findFather(father, LowestNode);
-                if(LowestNode.getRight() != null){
-                    LowestNodeFather.setLeft(LowestNode.getRight());
-                }
-                if(node.getRight() != LowestNode){
-                    LowestNode.setRight(node.getRight());
-                }
-                if(isRoot){
                     this.root.setRight(null);
-                    this.root = LowestNode;
+                    this.root = lowestNode;
                 }
+                //Both left and right son
                 else{
-
-                    if(father.getLeft() == node){
-                        father.setLeft(LowestNode);
+                    lowestNode = LowestElement(node.getRight());
+                    extremesFather = findFather(lowestNode);
+                    if(extremesFather == this.root){
+                        lowestNode.setLeft(this.root.getLeft());
                     }
                     else{
-                        father.setRight(LowestNode);
+                        extremesFather.setLeft(null);
+                        if(lowestNode.getRight() != null){
+                            extremesFather.setLeft(lowestNode.getRight());
+                        }
+                        lowestNode.setRight(this.root.getRight());
+                        lowestNode.setLeft(this.root.getLeft());
+                        this.root.setLeft(null);
                     }
+                    this.root.setRight(null);
+                    this.root = lowestNode;
                 }
             }
-            //Case 4: node has both left and right descendants
-            //Solution: get the LowestElement from the right subTree and set the left subTree as its left
+            //Case 1.0: Node != root
             else{
-                String lowest = LowestElement(node.getRight());
-                //The lowest Node from the Right will never have a left Descendant and will always be higher than the
-                //entire left subTree
-                AVLNode LowestNode = elementExists(node.getRight(), lowest, 0);
+                AVLNode father = findFather(node);
+                //No sons
+                if(node.getLeft() == null && node.getRight() == null){
+                    if(father.getLeft() == node) father.setLeft(null);
+                    else father.setRight(null);
+                }
+                //Left son
+                else if(node.getLeft() != null && node.getRight() == null){
+                    highestNode = HighestElement(node.getLeft());
+                    extremesFather = findFather(highestNode);
 
-                //Maintenance on the LowestNode's father if necessary
-                AVLNode LowestNodeFather = findFather(father, LowestNode);
-                if(LowestNode.getRight() != null){
-                    LowestNodeFather.setLeft(LowestNode.getRight());
+                    if(highestNode.getLeft() != null){
+                        extremesFather.setRight(highestNode.getLeft());
+                    }
+                    if(node.getLeft() != highestNode){
+                        highestNode.setLeft(node.getLeft());
+                    }
+                    if(father.getLeft() == node) father.setLeft(highestNode);
+                    else father.setRight(highestNode);
                 }
-
-                if(node.getRight() != LowestNode){
-                    LowestNode.setRight(node.getRight());
+                //Right son
+                else if(node.getLeft() == null && node.getRight() != null){
+                    lowestNode = LowestElement(node.getRight());
+                    extremesFather = findFather(lowestNode);
+                    if(lowestNode.getRight() != null){
+                        extremesFather.setLeft(lowestNode.getRight());
+                    }
+                    if(node.getRight() != lowestNode){
+                        lowestNode.setRight(node.getRight());
+                    }
+                    if(father.getLeft() == node) father.setLeft(lowestNode);
+                    else father.setRight(lowestNode);
                 }
-                if(node.getLeft() != LowestNode){
-                    LowestNode.setLeft(node.getLeft());
-                }
-                if(isRoot){
-                    this.root.setRight(null);
-                    this.root.setLeft(null);
-                    this.root = LowestNode;
-                }
-
+                //Both left and right son
                 else{
-                    if(father.getLeft() == node){
-                        father.setLeft(LowestNode);
+                    lowestNode = LowestElement(node.getRight());
+                    extremesFather = findFather(lowestNode);
+                    if(extremesFather != node){
+                        if(lowestNode.getRight() != null){
+                            extremesFather.setLeft(lowestNode.getRight());
+                        }
+                        if(node.getRight() != lowestNode){
+                            lowestNode.setRight(node.getRight());
+                        }
                     }
-                    else{
-                        father.setRight(LowestNode);
-                    }
+                    lowestNode.setLeft(node.getLeft());
+                    if(father.getLeft() == node) father.setLeft(lowestNode);
+                    else father.setRight(lowestNode);
                 }
-
             }
         }
-        else{
-            System.out.println("Element not in the Tree");
-        }
+        //Node not found
+        else System.out.println("Element not in the Tree");
     }
 
-    public String HighestElement(AVLNode node){
-        String highest = "a";
-        if(node != null){
-            highest = node.getWord();
-            String esq = HighestElement(node.getLeft());
-            if(esq.compareTo(highest) > 0){
-                highest = esq;
-            }
-            String dir = HighestElement(node.getRight());
-            if(dir.compareTo(highest) > 0){
-                highest = dir;
-            }
+    public AVLNode HighestElement(AVLNode node){
+        AVLNode curr = node;
+        AVLNode highestNode = null;
+        while(curr != null){
+            highestNode = curr;
+            curr = curr.getRight();
         }
-        return highest;
+        return highestNode;
     }
-    public String LowestElement(AVLNode node){
-        String lowest = "zzzzzzzzzzzzzzzz";
-        if(node != null){
-            lowest = node.getWord();
-            String esq = LowestElement(node.getLeft());
-            if(esq.compareTo(lowest) < 0){
-                lowest = esq;
-            }
-            String dir = LowestElement(node.getRight());
-            if(dir.compareTo(lowest) < 0){
-                lowest = dir;
-            }
+    public AVLNode LowestElement(AVLNode node){
+        AVLNode curr = node;
+        AVLNode lowestNode = null;
+        while(curr != null){
+            lowestNode = curr;
+            curr = curr.getLeft();
         }
-        return lowest;
+        return lowestNode;
     }
     public int height(AVLNode node){
         int hLeft, hRight;
@@ -256,7 +224,6 @@ public class AVL {
         }
         return hRight + 1;
     }
-    //--------------------METHODS WE WILL KEEP----------------------//
     public void printPreOrder(AVLNode node){
         if(getRoot() == null){
             return;
