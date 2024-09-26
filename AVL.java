@@ -8,6 +8,7 @@ public class AVL {
     public AVLNode getRoot(){
         return this.root;
     }
+
     public void insertElement(String word, String currentFile) {
         this.root = insertRecursively(this.root, word, currentFile);
     }
@@ -15,7 +16,7 @@ public class AVL {
         if (node == null) {
             return new AVLNode(word, currentFile);
         }
-        int res = node.getWord().compareTo(word);
+        int res = node.getWord().compareToIgnoreCase(word);
         //+, node.getWord comes after word
         if (res > 0) {
             node.setLeft(insertRecursively(node.getLeft(), word, currentFile));
@@ -33,23 +34,17 @@ public class AVL {
     //mode parameters sets if the element will be shown
     //0: just the search
     //1: search and print of the values
-    public AVLNode elementExists(AVLNode node,String word, int mode){
+    public AVLNode elementExists(AVLNode node, String word, int mode) {
         AVLNode curr = node;
-        boolean found = false;
-        AVLNode nodeWord = null;
-        while(!found){
-            if(curr != null){
-                int res = curr.getWord().compareTo(word);
-                if(res == 0){
-                    if(mode == 1){node.print();}
-                    found = true;
-                    nodeWord = curr;
-                }
-                else if(res > 0){curr = curr.getLeft();}
-                else{curr = curr.getRight();}
+        AVLNode nodeWord=  null;
+        while (curr != null) {
+            int res = curr.getWord().compareToIgnoreCase(word);
+            if (res == 0) {
+                if (mode == 1) curr.print();
+                nodeWord = curr;
             }
-            //turns found into true just to get out of the loop
-            else{found = true;}
+
+            curr = (res > 0) ? curr.getLeft() : curr.getRight();
         }
         return nodeWord;
     }
@@ -57,25 +52,17 @@ public class AVL {
     public AVLNode findFather(AVLNode son){
         AVLNode father = getRoot();
         AVLNode returnFather = null;
-        boolean found = false;
         //Both father and son are the root
         if(father == son){return returnFather;}
-        while(!found){
-            if(father != null){
-                if(father.getLeft() == son || father.getRight() == son){
-                    returnFather = father;
-                    found = true;
-                }
-                else if(father.getWord().compareTo(son.getWord()) > 0){
-                    father = father.getLeft();
-                }
-                else{father = father.getRight();}
+        while(father != null){
+            if(father.getLeft() == son || father.getRight() == son){
+                returnFather = father;
             }
-            //turns found into true just to get out of the loop
-            else{found = true;}
+            father = (father.getWord().compareTo(son.getWord()) > 0) ? father.getLeft() : father.getRight();
         }
         return returnFather;
     }
+
     public void removeElement(String word){
         //May return a node or null
         AVLNode node = elementExists(getRoot(), word, 0);
@@ -213,15 +200,13 @@ public class AVL {
         return lowestNode;
     }
     public int height(AVLNode node){
-        int hLeft, hRight;
-        if(node == null){
-            return -1;
-        }
-        hLeft = height(node.getLeft());
-        hRight = height(node.getRight());
-        if(hLeft > hRight){
-            return hLeft +1;
-        }
+        if(node == null) return -1;
+
+        int hLeft = height(node.getLeft());
+        int hRight = height(node.getRight());
+
+        if(hLeft > hRight) return hLeft +1;
+
         return hRight + 1;
     }
     public void printPreOrder(AVLNode node){
@@ -235,9 +220,8 @@ public class AVL {
         }
     }
     public void printInOrder(AVLNode node){
-        if(getRoot() == null){
-            return;
-        }
+        if(getRoot() == null) return;
+
         if(node != null){
             printInOrder(node.getLeft());
             System.out.println(node.getWord());
@@ -245,9 +229,8 @@ public class AVL {
         }
     }
     public void printPostOrder(AVLNode node){
-        if(getRoot() == null){
-            return;
-        }
+        if(getRoot() == null) return;
+
         if(node != null){
             printPostOrder(node.getLeft());
             printPostOrder(node.getRight());
