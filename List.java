@@ -11,6 +11,7 @@ public class List {
     //always inserting at the end of the list
     public void insertNode(String fileName){
         ListNode newNode = new ListNode(fileName);
+
         if(this.tail == null){
             this.head = newNode;
         }
@@ -23,25 +24,20 @@ public class List {
     //if the node is not found, then creates a new node
     //and inserts in the end of the list
     public void addNodeFrequency(String fileName){
-        boolean inserted = false;
         ListNode curr = head;
-        while(!inserted){
+        while(curr != null){
             //Node found
             if(curr.getFileName().equals(fileName)){
                 curr.increaseFrequency();
-                inserted = true;
+                return;
             }
-            //Not the current node
-            else{
-                //If the curr is the tail
-                if(curr.getNext() == null){
-                    insertNode(fileName);
-                    inserted = true;
-                }
-                curr = curr.getNext();
-
+            if(curr.getNext() == null){
+                insertNode(fileName);
+                return;
             }
+            curr = curr.getNext();
         }
+        insertNode(fileName);
     }
     //Gets the length of the List
     public int length(){
@@ -59,8 +55,7 @@ public class List {
         ListNode curr = head;
         int totalFrequency = 0;
         while(curr != null){
-            System.out.print("Arquivo "+curr.getFileName()+" : ");
-            System.out.println(curr.getFrequency());
+            System.out.printf("Arquivo %s : %d\n", curr.getFileName(), curr.getFrequency());
             totalFrequency += curr.getFrequency();
             curr = curr.getNext();
         }
