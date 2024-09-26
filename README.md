@@ -3,6 +3,7 @@
 Student Group:
 Fabricio Goes Pinterich,
 Gabriel Marques Simini,
+Isabella Vanderlinde Berkembrock,
 Crystofer Samuel Demetino dos Santos
 
 The AVL-WordTracking is basically a program which receives as an input a directory with N files .txt,
