@@ -210,9 +210,8 @@ public class AVL {
         return hRight + 1;
     }
     public void printPreOrder(AVLNode node){
-        if(getRoot() == null){
-            return;
-        }
+        if(getRoot() == null) return;
+
         if(node != null){
             System.out.println(node.getWord());
             printPreOrder(node.getLeft());

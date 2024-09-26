@@ -9,21 +9,19 @@ public class TestingMain {
     public static void main(String[] args) {
         String str1 = "banana";
         String[] chars = {"cabra", "casa", "banana", "mamao"};
-        String[] chars2 = {"cabra", "camelo", "almondega", "vagem"};
+        String[] chars2 = {"CABRA", "camelo", "almondega", "vagem", "mamao"};
         AVL arvore = new AVL();
-        for (int i = 0; i < chars.length; i++) {
-            String string = chars[i];
+        for (String string : chars) {
             arvore.insertElement(string, "chars");
         }
-        for (int i = 0; i < chars2.length; i++) {
-            String string = chars2[i];
+        for (String string : chars2) {
             arvore.insertElement(string, "chars2");
         }
-        //arvore.removeElement("cabra");
-        arvore.removeElement("casa");
 
         arvore.printInOrder(arvore.getRoot());
-        //System.out.println(arvore.getRoot().getWord());
+        arvore.getRoot().print();
+        arvore.elementExists(arvore.getRoot(), "mamao", 1);
+        System.out.println(arvore.height(arvore.getRoot()));
 
 
     }
