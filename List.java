@@ -64,7 +64,6 @@ public class List {
             curr = curr.getNext();
         }
         System.out.println("Total occurrences: " + totalFrequency);
-        System.out.println("==============================");
     }
 
 }

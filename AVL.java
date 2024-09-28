@@ -217,22 +217,19 @@ public class AVL {
         }
     }
 
-    public void printInOrder(AVLNode node){
-        if(getRoot() == null) return;
-
-        if(node != null){
+    public void printInOrder(AVLNode node) {
+        if (node != null) {
             printInOrder(node.getLeft());
-            System.out.println(node.getWord());
+            node.print();
             printInOrder(node.getRight());
         }
     }
-    public void printPostOrder(AVLNode node){
-        if(getRoot() == null) return;
 
-        if(node != null){
+    public void printPostOrder(AVLNode node) {
+        if (node != null) {
             printPostOrder(node.getLeft());
             printPostOrder(node.getRight());
-            System.out.println(node.getWord());
+            node.print();
         }
     }
 }
