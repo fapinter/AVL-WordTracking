@@ -35,5 +35,6 @@ public class AVLNode {
     public void print(){
         System.out.println("Word: "+getWord());
         frequencyCounter.print();
+        System.out.println("==============================");
     }
 }
