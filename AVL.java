@@ -1,14 +1,16 @@
-//AVL concepts not applied yet
 public class AVL {
     private AVLNode root;
 
-    //Constructor instancing the root as null
-    //the first word inserted will be the root
-    public AVL(){this.root = null;}
-    public AVLNode getRoot(){
+    // Constructor instancing the root as null
+    public AVL() {
+        this.root = null;
+    }
+
+    public AVLNode getRoot() {
         return this.root;
     }
 
+    // Insert method with dynamic height calculation and AVL rebalancing
     public void insertElement(String word, String currentFile) {
         this.root = insertRecursively(this.root, word, currentFile);
     }
@@ -18,6 +20,7 @@ public class AVL {
             return new AVLNode(word, currentFile);
         }
         int res = node.getWord().compareToIgnoreCase(word);
+
         if (res > 0) {
             node.setLeft(insertRecursively(node.getLeft(), word, currentFile));
         } else if (res < 0) {
@@ -26,264 +29,129 @@ public class AVL {
             node.increaseFrequency(currentFile); // Word already exists, increase frequency
             return node;
         }
-        // Update height of the current node
-        node.setHeight(1 + Math.max(height(node.getLeft()), height(node.getRight())));
-        // Rebalance the node
+
+        // Rebalance the node after insertion
         return rebalance(node);
     }
-    //mode parameters sets if the element will be shown
-    //0: just the search
-    //1: search and print of the values
+
+    // Search for the element
     public AVLNode elementExists(AVLNode node, String word, int mode) {
         AVLNode curr = node;
-        AVLNode nodeWord=  null;
         while (curr != null) {
             int res = curr.getWord().compareToIgnoreCase(word);
             if (res == 0) {
                 if (mode == 1) curr.print();
-                nodeWord = curr;
+                return curr;
             }
-
             curr = (res > 0) ? curr.getLeft() : curr.getRight();
         }
-        return nodeWord;
+        return null;
     }
 
-    public AVLNode findFather(AVLNode son){
-        AVLNode father = getRoot();
-        AVLNode returnFather = null;
-        //Both father and son are the root
-        if(father == son){return returnFather;}
-        while(father != null){
-            if(father.getLeft() == son || father.getRight() == son){
-                returnFather = father;
-            }
-            father = (father.getWord().compareTo(son.getWord()) > 0) ? father.getLeft() : father.getRight();
-        }
-        return returnFather;
-    }
-
+    // Remove element
     public void removeElement(String word) {
-        this.root = removeBalanced(this.root, word);
+        this.root = removeRecursively(this.root, word);
     }
 
-    private AVLNode removeBalanced(AVLNode node, String word) {
-        if (node == null) {
-            System.out.println("Element not in the Tree");
-            return node;
-        }
-
-        AVLNode lowestNode, highestNode, extremesFather;
+    private AVLNode removeRecursively(AVLNode node, String word) {
+        if (node == null) return null;
 
         int res = node.getWord().compareToIgnoreCase(word);
 
-        // Left case
         if (res > 0) {
             node.setLeft(removeRecursively(node.getLeft(), word));
-        }
-        // Right case
-        else if (res < 0) {
+        } else if (res < 0) {
             node.setRight(removeRecursively(node.getRight(), word));
-        }
-        // Node found
-        else {
-            // Case 0.0: Node == root
-            if (node == this.root) {
-                if (node.getLeft() == null && node.getRight() == null) {
-                    this.root = null; // No children
-                } else if (node.getLeft() != null && node.getRight() == null) { // Left child only
-                    highestNode = HighestElement(node.getLeft());
-                    extremesFather = findFather(highestNode);
-                    if (extremesFather != this.root) {
-                        extremesFather.setRight(null);
-                        if (highestNode.getLeft() != null) {
-                            extremesFather.setRight(highestNode.getLeft());
-                        }
-                        highestNode.setLeft(this.root.getLeft());
-                    }
-                    this.root.setLeft(null);
-                    this.root = highestNode;
-                } else if (node.getLeft() == null && node.getRight() != null) { // Right child only
-                    lowestNode = LowestElement(node.getRight());
-                    extremesFather = findFather(lowestNode);
-                    if (extremesFather != this.root) {
-                        extremesFather.setLeft(null);
-                        if (lowestNode.getRight() != null) {
-                            extremesFather.setLeft(lowestNode.getRight());
-                        }
-                        lowestNode.setRight(this.root.getRight());
-                    }
-                    this.root.setRight(null);
-                    this.root = lowestNode;
-                } else { // Two children
-                    lowestNode = LowestElement(node.getRight());
-                    extremesFather = findFather(lowestNode);
-                    if (extremesFather == this.root) {
-                        lowestNode.setLeft(this.root.getLeft());
-                    } else {
-                        extremesFather.setLeft(null);
-                        if (lowestNode.getRight() != null) {
-                            extremesFather.setLeft(lowestNode.getRight());
-                        }
-                        lowestNode.setRight(this.root.getRight());
-                        lowestNode.setLeft(this.root.getLeft());
-                        this.root.setLeft(null);
-                    }
-                    this.root.setRight(null);
-                    this.root = lowestNode;
-                }
+        } else {
+            // Node to be deleted found
+            if (node.getLeft() == null) {
+                return node.getRight();
+            } else if (node.getRight() == null) {
+                return node.getLeft();
             }
-            // Case 1.0: Node != root
-            else {
-                AVLNode father = findFather(node);
-                if (node.getLeft() == null && node.getRight() == null) { // No children
-                    if (father.getLeft() == node) father.setLeft(null);
-                    else father.setRight(null);
-                } else if (node.getLeft() != null && node.getRight() == null) { // Left child only
-                    highestNode = HighestElement(node.getLeft());
-                    extremesFather = findFather(highestNode);
-                    if (highestNode.getLeft() != null) {
-                        extremesFather.setRight(highestNode.getLeft());
-                    }
-                    if (node.getLeft() != highestNode) {
-                        highestNode.setLeft(node.getLeft());
-                    }
-                    if (father.getLeft() == node) father.setLeft(highestNode);
-                    else father.setRight(highestNode);
-                } else if (node.getLeft() == null && node.getRight() != null) { // Right child only
-                    lowestNode = LowestElement(node.getRight());
-                    extremesFather = findFather(lowestNode);
-                    if (lowestNode.getRight() != null) {
-                        extremesFather.setLeft(lowestNode.getRight());
-                    }
-                    if (node.getRight() != lowestNode) {
-                        lowestNode.setRight(node.getRight());
-                    }
-                    if (father.getLeft() == node) father.setLeft(lowestNode);
-                    else father.setRight(lowestNode);
-                } else { // Two children
-                    lowestNode = LowestElement(node.getRight());
-                    extremesFather = findFather(lowestNode);
-                    if (extremesFather != node) {
-                        if (lowestNode.getRight() != null) {
-                            extremesFather.setLeft(lowestNode.getRight());
-                        }
-                        if (node.getRight() != lowestNode) {
-                            lowestNode.setRight(node.getRight());
-                        }
-                    }
-                    lowestNode.setLeft(node.getLeft());
-                    if (father.getLeft() == node) father.setLeft(lowestNode);
-                    else father.setRight(lowestNode);
-                }
-            }
+
+            // Node with two children: Get the smallest in the right subtree
+            AVLNode temp = LowestElement(node.getRight());
+            node.setWord(temp.getWord());
+            node.setRight(removeRecursively(node.getRight(), temp.getWord()));
         }
 
-        // Update height of the current node
-        if (node != null) {
-            node.setHeight(1 + Math.max(height(node.getLeft()), height(node.getRight())));
-        }
-        // Rebalance the node
+        // Rebalance the node after deletion
         return rebalance(node);
     }
-    public AVLNode HighestElement(AVLNode node) {
-        AVLNode curr = node;
-        AVLNode highestNode = null;
-        while (curr != null) {
-            highestNode = curr;
-            curr = curr.getRight();
-        }
-        return highestNode;
-    }
+
+    // Helper to find the lowest value in the tree
     public AVLNode LowestElement(AVLNode node) {
-        AVLNode curr = node;
-        AVLNode lowestNode = null;
-        while (curr != null) {
-            lowestNode = curr;
-            curr = curr.getLeft();
+        while (node.getLeft() != null) {
+            node = node.getLeft();
         }
-        return lowestNode;
+        return node;
     }
+
+    // AVL-specific balancing helpers
+
+    // Calculate height dynamically
     public int height(AVLNode node) {
-        return (node == null) ? -1 : node.getHeight();
+        if (node == null) return -1;
+        return 1 + Math.max(height(node.getLeft()), height(node.getRight()));
     }
+
+    // Get balance factor of node
     private int getBalance(AVLNode node) {
-        if (node == null) {
-            return 0;
-        }
+        if (node == null) return 0;
         return height(node.getLeft()) - height(node.getRight());
     }
+
+    // Rebalance node based on balance factor
+    private AVLNode rebalance(AVLNode node) {
+        int balance = getBalance(node);
+
+        // Left heavy
+        if (balance > 1) {
+            if (getBalance(node.getLeft()) < 0) {
+                node.setLeft(rotateLeft(node.getLeft()));
+            }
+            return rotateRight(node);
+        }
+
+        // Right heavy
+        if (balance < -1) {
+            if (getBalance(node.getRight()) > 0) {
+                node.setRight(rotateRight(node.getRight()));
+            }
+            return rotateLeft(node);
+        }
+
+        return node;
+    }
+
+    // Right rotation
     private AVLNode rotateRight(AVLNode y) {
         AVLNode x = y.getLeft();
         AVLNode T2 = x.getRight();
+
         // Perform rotation
         x.setRight(y);
         y.setLeft(T2);
-        // Update heights
-        y.setHeight(1 + Math.max(height(y.getLeft()), height(y.getRight())));
-        x.setHeight(1 + Math.max(height(x.getLeft()), height(x.getRight())));
-        return x; // Return new root
+
+        // Return new root
+        return x;
     }
+
+    // Left rotation
     private AVLNode rotateLeft(AVLNode x) {
         AVLNode y = x.getRight();
         AVLNode T2 = y.getLeft();
+
         // Perform rotation
         y.setLeft(x);
         x.setRight(T2);
-        // Update heights
-        x.setHeight(1 + Math.max(height(x.getLeft()), height(x.getRight())));
-        y.setHeight(1 + Math.max(height(y.getLeft()), height(y.getRight())));
-        return y; // Return new root
-    }
-    private AVLNode rebalance(AVLNode node) {
-        int balance = getBalance(node);
-        // Left Left Case
-        if (balance > 1 && getBalance(node.getLeft()) >= 0) {
-            return rotateRight(node);
-        }
-        // Left Right Case
-        if (balance > 1 && getBalance(node.getLeft()) < 0) {
-            node.setLeft(rotateLeft(node.getLeft()));
-            return rotateRight(node);
-        }
-        // Right Right Case
-        if (balance < -1 && getBalance(node.getRight()) <= 0) {
-            return rotateLeft(node);
-        }
-        // Right Left Case
-        if (balance < -1 && getBalance(node.getRight()) > 0) {
-            node.setRight(rotateRight(node.getRight()));
-            return rotateLeft(node);
-        }
-        return node; // Return the (possibly unchanged) node pointer
+
+        // Return new root
+        return y;
     }
 
-    public AVLNode HighestElement(AVLNode node){
-        AVLNode curr = node;
-        AVLNode highestNode = null;
-        while(curr != null){
-            highestNode = curr;
-            curr = curr.getRight();
-        }
-        return highestNode;
-    }
-    public AVLNode LowestElement(AVLNode node){
-        AVLNode curr = node;
-        AVLNode lowestNode = null;
-        while(curr != null){
-            lowestNode = curr;
-            curr = curr.getLeft();
-        }
-        return lowestNode;
-    }
-    public int height(AVLNode node){
-        if(node == null) return -1;
-        int hLeft = height(node.getLeft());
-        int hRight = height(node.getRight());
-        if(hLeft > hRight) return hLeft +1;
-
-        return hRight + 1;
-    }
+    // Print methods for tree traversal
     public void printPreOrder(AVLNode node) {
         if (node != null) {
             node.print();
@@ -291,6 +159,7 @@ public class AVL {
             printPreOrder(node.getRight());
         }
     }
+
     public void printInOrder(AVLNode node) {
         if (node != null) {
             printInOrder(node.getLeft());
@@ -298,58 +167,12 @@ public class AVL {
             printInOrder(node.getRight());
         }
     }
+
     public void printPostOrder(AVLNode node) {
         if (node != null) {
             printPostOrder(node.getLeft());
             printPostOrder(node.getRight());
             node.print();
         }
-    }
-    private int getBalance(AVLNode node) {
-        if (node == null) {
-            return 0;
-        }
-        return height(node.getLeft()) - height(node.getRight());
-    }
-
-    public int height(AVLNode node) {
-        return (node == null) ? -1 : node.getHeight();
-    }
-
-    private AVLNode rotateRight(AVLNode y) {
-        AVLNode x = y.getLeft();
-        AVLNode T2 = x.getRight();
-        x.setRight(y);
-        y.setLeft(T2);
-        y.setHeight(1 + Math.max(height(y.getLeft()), height(y.getRight())));
-        x.setHeight(1 + Math.max(height(x.getLeft()), height(x.getRight())));
-        return x;
-    }
-    private AVLNode rotateLeft(AVLNode x) {
-        AVLNode y = x.getRight();
-        AVLNode T2 = y.getLeft();
-        y.setLeft(x);
-        x.setRight(T2);
-        x.setHeight(1 + Math.max(height(x.getLeft()), height(x.getRight())));
-        y.setHeight(1 + Math.max(height(y.getLeft()), height(y.getRight())));
-        return y;
-    }
-    private AVLNode rebalance(AVLNode node) {
-        int balance = getBalance(node);
-        if (balance > 1 && getBalance(node.getLeft()) >= 0) {
-            return rotateRight(node);
-        }
-        if (balance < -1 && getBalance(node.getRight()) <= 0) {
-            return rotateLeft(node);
-        }
-        if (balance > 1 && getBalance(node.getLeft()) < 0) {
-            node.setLeft(rotateLeft(node.getLeft()));
-            return rotateRight(node);
-        }
-        if (balance < -1 && getBalance(node.getRight()) > 0) {
-            node.setRight(rotateRight(node.getRight()));
-            return rotateLeft(node);
-        }
-        return node;
     }
 }
