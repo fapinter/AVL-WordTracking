@@ -1,3 +1,5 @@
+import java.io.File;
+
 public class List {
     private ListNode head;
     private ListNode tail;
@@ -51,14 +53,17 @@ public class List {
     }
     //Prints all the occurrences of the
     //word in each file and the total frequency
-    public void print(){
+    public void print() {
         ListNode curr = head;
         int totalFrequency = 0;
-        while(curr != null){
-            System.out.printf("Arquivo %s : %d\n", curr.getFileName(), curr.getFrequency());
+        // Traverse the list until the end
+        while (curr != null) {
+            String fileName = new File(curr.getFileName()).getName();
+            System.out.printf("File: %s | Frequency: %d\n", fileName, curr.getFrequency());
             totalFrequency += curr.getFrequency();
             curr = curr.getNext();
         }
-        System.out.println("Total de ocorrências : "+ totalFrequency);
+        System.out.println("Total occurrences: " + totalFrequency);
     }
+
 }
