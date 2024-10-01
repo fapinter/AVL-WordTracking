@@ -221,6 +221,7 @@ public class AVL {
     }
 
     private AVLNode rotateRight(AVLNode y) {
+        System.out.println("girando pra direita");
         AVLNode x = y.getLeft();
         AVLNode T2 = x.getRight();
         // Perform rotation
@@ -230,6 +231,7 @@ public class AVL {
     }
 
     private AVLNode rotateLeft(AVLNode x) {
+        System.out.println("girando pra esquerda");
         AVLNode y = x.getRight();
         AVLNode T2 = y.getLeft();
         // Perform rotation
@@ -253,4 +255,30 @@ public class AVL {
         if (balance < -1 && getBalance(node.getRight()) <= 0) {
             return rotateLeft(node);
         }
+        return null;
         //
+    }
+    public void printPreOrder(AVLNode node) {
+        if (node != null) {
+            node.print();
+            printPreOrder(node.getLeft());
+            printPreOrder(node.getRight());
+        }
+    }
+
+    public void printInOrder(AVLNode node) {
+        if (node != null) {
+            printInOrder(node.getLeft());
+            node.print();
+            printInOrder(node.getRight());
+        }
+    }
+
+    public void printPostOrder(AVLNode node) {
+        if (node != null) {
+            printPostOrder(node.getLeft());
+            printPostOrder(node.getRight());
+            node.print();
+        }
+    }
+}

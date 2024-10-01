@@ -1,3 +1,4 @@
+import java.text.Normalizer;
 import java.util.Scanner;
 
 public class Menu {
@@ -41,6 +42,8 @@ public class Menu {
                 case 4:
                     System.out.print("Enter the word to search: ");
                     String word = scanner.nextLine();
+                    word = word.replaceAll("\\p{Punct}", "");
+                    word = removerAcentos(word);
                     if (avlTree.elementExists(avlTree.getRoot(), word, 1) != null) {
                         System.out.println("Word found.");
                     } else {
@@ -55,5 +58,9 @@ public class Menu {
             }
         } while (choice != 0);
         scanner.close();
+    }
+    public static String removerAcentos(String palavra) {
+        String normalized = Normalizer.normalize(palavra, Normalizer.Form.NFD);
+        return normalized.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
     }
 }
