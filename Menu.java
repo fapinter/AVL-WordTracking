@@ -1,4 +1,5 @@
 import java.text.Normalizer;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
@@ -10,7 +11,7 @@ public class Menu {
 
     public void display() {
         Scanner scanner = new Scanner(System.in);
-        int choice;
+        int choice = 0;
 
         do {
             System.out.println("Menu:");
@@ -20,8 +21,16 @@ public class Menu {
             System.out.println("4. Search for a word");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
-            choice = scanner.nextInt();
-            scanner.nextLine();
+
+            try{
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            }
+            catch(InputMismatchException exception){
+                System.out.println("Type a valid option: ");
+                break;
+            }
+
 
             switch (choice) {
                 case 1:
@@ -55,6 +64,7 @@ public class Menu {
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.");
+                    break;
             }
         } while (choice != 0);
         scanner.close();

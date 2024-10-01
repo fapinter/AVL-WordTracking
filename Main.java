@@ -3,6 +3,10 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.text.Normalizer;
 
+//Palavras para teste da arvore
+// sociedade, automacao, ecossistemas, Twitter, inteligência
+
+
 public class Main {
     public static void main(String[] args) {
         String folderPath = "artigos";
